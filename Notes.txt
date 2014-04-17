@@ -1,0 +1,24 @@
+Plan:
+-> Connect to DB
+	|-> Report Errors if Necessary
+-> Store last time database was updated
+	|-> If it was within 5 seconds, wait 5 seconds and test again.
+	|-> Else see if it is currently being updated.
+		|-> Wait 5 seconds and try again.
+-> Define eZe variables
+-> Cycle through each controller
+	|-> Cycle through each input for each controller
+		|-> Pull data from eZe and store to a two dimensional array
+-> Cycle through all data and push to DB.
+-> Change the last DateTime updated to the last DateTime Grabbed from eZe.
+-> Restart
+
+		
+Points to talk about:
+Do we need to average or test for data that is out of range?
+	PointSettings: Min (op. val), Max, % Change, Conditions (check if on)
+How strict are our 5 second interval requirements?
+
+DB Design:
+DateTime
+In Progress

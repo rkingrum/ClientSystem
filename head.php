@@ -1,2 +1,2 @@
-<script type="text/javascript" src=<?php echo "'".$vars["root"].$vars["files"]["jQuery"]."'"; ?> ></script>
-<script type="text/javascript" src=<?php echo "'".$vars["root"].$vars["files"]["formJs"]."'"; ?> ></script>
+<script type="text/javascript" src="<?php echo $vars["root"].$vars["files"]["jQuery"]; ?>" ></script>
+<script type="text/javascript" src="<?php echo $vars["root"].$vars["files"]["formJs"]; ?>" ></script>
