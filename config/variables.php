@@ -25,8 +25,11 @@
 	$vars["sql"] = array(
 		"lastUpdate"		=>	"SELECT DateTime FROM update_tracker ORDER BY DateTime DESC LIMIT 1",
 		"updateUpdate"		=>	"INSERT INTO `update_tracker`(`DateTime`) VALUES (UTC_TIMESTAMP())",
-		"getRealtimeData"	=>	"SELECT * FROM raw_data WHERE PointID = ? ORDER BY DateTime ASC",
-		"getPoints"			=> 	"SELECT DISTINCT PointID FROM raw_data"
+		"getRealtimeData"	=>	"SELECT A.PointID, A.DateTime, A.Value, B.Name, B.Desc, B.RealTimeUnits FROM raw_data A LEFT JOIN points B ON A.pointID = B.pointID WHERE B.groupID = ? ORDER BY DateTime ASC",
+		"getPoints"			=> 	"SELECT DISTINCT PointID FROM raw_data", //Deprecated
+		"getLocation"		=>	"SELECT LocationID, Name FROM location WHERE ClientID = ?",
+		"getSystem"			=>	"SELECT SystemID, Name FROM system WHERE LocationID = ?",
+		"getGroups"			=>	"SELECT GroupID, Name FROM groups WHERE SystemID = ?"
 	);
 	$vars["scripts"] = array(
 		"jqPlot"		=>	'<!--[if lt IE 9]><script language="javascript" type="text/javascript" src="'.$vars["root"].$vars["files"]["excanvas"].'"></script><![endif]-->
