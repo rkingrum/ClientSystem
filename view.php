@@ -52,20 +52,38 @@
 						}
 						echo "</select> <br />";
 					}
+					$date = date('Y-m-d\TH:i:s');
+					echo "<span>Starting Date: </span><input id='dateStart' type='datetime-local' value='".date('Y-m-d\TH:i:s', strtotime('-1 day', strtotime($date)))."' /> <br />";
+					echo "<span>Ending Date: </span><input id='dateEnd' type='datetime-local' value='".$date."' /> <br />";
+					echo "<input type='button' id='refreshRealtimeButton' value='refresh'></input>";
 						?>
 							<script>
 								$(document).ready(function(){
-									$('#pointIDButton').click(refreshRealtime);
+									$('#refreshRealtimeButton').click(refreshRealtime);
 									refreshRealtime();
+									window.setInterval(function(){
+										getInstant();
+									}, 10000);
 								});
 								function refreshRealtime() {
 									$.ajax({
 										type: "GET",
 										url: "<?php echo $vars["root"].$vars["files"]["realtime"] ?>",
-										data: { group: $('#pointIDSelect').val() }
+										data: {
+											group: $('#groupsIDSelect').val(),
+											start: $('#dateStart').val(),
+											end: $('#dateEnd').val()
+										}
 									}).done( function(data) {
 										$('#realtimeContainer').html(data);
 									});
+								}
+								function getInstant() {
+									$.ajax({
+										type: "GET",
+										url: "<?php echo $vars["root"].$vars["files"]["getCurrentData"] ?>",
+										data: { group: $('#pointIDSelect').val() }
+									}).done(refreshRealtime);
 								}
 							</script>
 						<?php

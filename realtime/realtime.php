@@ -1,25 +1,27 @@
 <?php
-	if (isset($_GET['group']))
-		$group = $_GET['group'];
-	else
-		$group = 1;
+	$group = (isset($_GET['group'])) ? $_GET['group'] : 1;
+	$start = (isset($_GET['start'])) ? $_GET['start'] : 1;
+	$end = (isset($_GET['end'])) ? $_GET['end'] : 1;
 	
 	include "../config/variables.php";
 	include "../".$vars["files"]["dbConnect"];
-	$stmt = $mysqli->prepare($vars["sql"]["getRealtimeData"]);
-	$stmt->bind_param("i", $group);
-	$stmt->execute();
-	$result = $stmt->get_result();
-	$stmt->close();
 	$container = array();
-	while ($row = $result->fetch_array(MYSQLI_NUM))
-		$container[$row[0]][] = [
-			"time"		=>	$row[1],
-			"value"		=>	$row[2],
-			"name"		=>	$row[3],
-			"desc"		=>	$row[4],
-			"units"		=>	$row[5]
-		];
+	$dataSwitch = [ 0 => $vars["sql"]["getRealtimeData"], 1 => $vars["sql"]["getTempData"] ];
+	foreach ($dataSwitch as $conn) {
+		$stmt = $mysqli->prepare($conn);
+		$stmt->bind_param("iss", $group, $start, $end);
+		$stmt->execute();
+		$result = $stmt->get_result();
+		$stmt->close();
+		while ($row = $result->fetch_array(MYSQLI_NUM))
+			$container[$row[0]][] = [
+				"time"		=>	$row[1],
+				"value"		=>	$row[2],
+				"name"		=>	$row[3],
+				"desc"		=>	$row[4],
+				"units"		=>	$row[5]
+			];
+	}
 	$chartData = "[";
 	foreach ($container as $id => $point) {
 		$chartData .= "[";
@@ -53,7 +55,11 @@
 				?>
 			],
 			axes:{ 
-				xaxis:{ renderer:$.jqplot.DateAxisRenderer },
+				xaxis:{ 
+					renderer:$.jqplot.DateAxisRenderer,
+					min:'<?php echo date("Y-n-d g:iA", strtotime($start)); ?>',
+					max:'<?php echo date("Y-n-d g:iA", strtotime($end)); ?>'
+				},
 				<?php
 					$i = 1;
 					foreach ($container as $point) {
