@@ -53,7 +53,7 @@
 						echo "</select> <br />";
 					}
 					$date = date('Y-m-d\TH:i:s');
-					echo "<span>Starting Date: </span><input id='dateStart' type='datetime-local' value='".date('Y-m-d\TH:i:s', strtotime('-1 day', strtotime($date)))."' /> <br />";
+					echo "<span>Starting Date: </span><input id='dateStart' type='datetime-local' value='".date('Y-m-d\TH:i:s', strtotime('-1 hours', strtotime($date)))."' /> <br />";
 					echo "<span>Ending Date: </span><input id='dateEnd' type='datetime-local' value='".$date."' /> <br />";
 					echo "<input type='button' id='refreshRealtimeButton' value='refresh'></input>";
 						?>
@@ -75,19 +75,30 @@
 											end: $('#dateEnd').val()
 										}
 									}).done( function(data) {
+										console.log(data);
 										$('#realtimeContainer').html(data);
 									});
 								}
 								function getInstant() {
+									
 									$.ajax({
-										type: "GET",
+										type: "POST",
 										url: "<?php echo $vars["root"].$vars["files"]["getCurrentData"] ?>",
-										data: { group: $('#pointIDSelect').val() }
-									}).done(refreshRealtime);
+										data: { group: $('#pointIDSelect').val() },
+										dataType: 'json',
+										cache: false,
+										success: function(result) {
+											refreshRealtime();
+										}
+									})
+								}
+								function refreshData(data) {
+									$('#dataContainer').html(data);
 								}
 							</script>
 						<?php
-					echo "<div id='realtimeContainer'></div>";
+					echo "<div id='realtimeContainer'></div> <br />";
+					echo "<div id='dataContainer'></div>";
 				}
 				else {
 					?>

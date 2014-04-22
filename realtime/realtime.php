@@ -97,5 +97,14 @@
 		});
 		
 		$('#realtime-reset').click(function() {realtime.resetZoom()});
+		<?php
+			$chartData = "<table><tr><td>Name</td><td>Value</td><td>Units</td></tr>";
+			foreach ($container as $point) {
+				$i = count($point) - 1;
+				$chartData .= "<tr><td>".$point[$i]["name"]."</td><td>".$point[$i]["value"]."</td><td>".$point[$i]["units"]."</td></tr>";
+			}
+			$chartData .= "</table>"; 
+			echo "refreshData('".$chartData."');";
+		?>
 	});
 </script>

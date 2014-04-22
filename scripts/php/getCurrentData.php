@@ -1,5 +1,5 @@
 <?php
-	$location = (isset($_GET['location'])) ? $_GET['location'] : 1;
+	$location = (isset($_POST['location'])) ? $_POST['location'] : 1;
 
 	include "../../config/variables.php";
 	include "../../".$vars["files"]["dbConnect"];
@@ -14,7 +14,8 @@
 		$controllers[] = $row[0];
 	$ezeurl = "https://ezecontrol.com/api/status.php";
 	$ezepass = "daisy5958";
-
+	
+	$points = array();
 	for ($i = 0, $length = count($controllers); $i < $length; $i++) {
 		$cookiefile = tempnam ("/tmp", "CURLCOOKIE");
 		$ch = curl_init($ezeurl);
@@ -25,35 +26,28 @@
 		$result = curl_exec($ch); // send the request
 		curl_close($ch);
 
-		// Decode the json into an object, and make sure it's ok.
 		if(($ctldata = json_decode($result)) === NULL)
 			echo($controllers[$i].": Bad json <br />");
 		else {
-			// Make sure the data was returned ok.
-			if($ctldata->status != 'OK')
-				echo($controllers[$i].": ".$ctldata->status."<br />");
-			else {
+			if($ctldata->status == 'OK') {
 				$timestamp = date("Y-m-d H:i:s", strtotime($ctldata->time));
-				
-				// Go through all the inputs
 				foreach($ctldata->inputs as $inp)  
-					// Look for a PointID tag in the name (#nnn)
 					if(preg_match('/#(\d\d\d\d\d\d)/', $inp->name, $id) == 1)
-						$calcBase[intval($id[1])] = floatval($inp->real);
-				echo($controllers[$i].": Success <br />");
+						$points[intval($id[1])] = floatval($inp->real);
 			}
 		}
 		$result = null;
 		$ctldata = null;
 	}
 	
-	foreach ($calcBase as $key => $value) {
+	foreach ($points as $key => $value) {
 		if ($value < 0)
 			$value = 0;
 		$stmt = $mysqli->prepare($vars["sql"]["insertTmpData"]);
 		$stmt->bind_param("isi", $key, $timestamp, $value);
 		$stmt->execute();
 		$stmt->close();
-		echo ($key." Complete. <br />");
 	}
+	
+	echo json_encode($points);
 ?>
