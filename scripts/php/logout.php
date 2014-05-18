@@ -12,5 +12,6 @@
 				$params["secure"],
 				$params["httponly"]);
 	session_destroy();
+	$_SESSION['is_open'] = FALSE;
 	echo "Logout Successful.";
 ?>

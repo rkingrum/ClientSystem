@@ -14,6 +14,7 @@
 			$httponly);
 		session_start();
 		session_regenerate_id();
+		$_SESSION['is_open'] = TRUE;
 	}
 	
 	function login($username, $password, $mysqli) {

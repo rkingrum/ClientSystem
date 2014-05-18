@@ -10,7 +10,7 @@
 	</head>
 	<body>
 		<?php
-			if (session_status() == PHP_SESSION_NONE)
+			if ($_SESSION['is_open'] == FALSE)
 				if (isset($_COOKIE["PHPSESSID"]))
 					session_start($_COOKIE["PHPSESSID"]);
 			include $vars["files"]["dbConnect"];
