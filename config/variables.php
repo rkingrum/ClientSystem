@@ -20,8 +20,13 @@
 		"jqPlot"		=>	"/jqPlot/jquery.jqplot.min.js",
 		"jqDate"		=>	"/jqPlot/plugins/jqplot.dateAxisRenderer.min.js",
 		"jqHigh"		=>	"/jqPlot/plugins/jqplot.highlighter.min.js",
-		"jqCursor"		=>	"/jqPlot//plugins/jqplot.cursor.min.js",
-		"jqPlotCSS"		=>	"/jqPlot/jquery.jqplot.css"
+		"jqCursor"		=>	"/jqPlot/plugins/jqplot.cursor.min.js",
+		"jqTextRender"	=>	"/jqPlot/plugins/jqplot.canvasTextRenderer.min.js",
+		"jqAxisRender"	=>	"/jqPlot/plugins/jqplot.canvasAxisLabelRenderer.min.js",
+		"jqPlotCSS"		=>	"/jqPlot/jquery.jqplot.css",
+		"css"			=>	"/css/style.css",
+		"logo"			=>	"/images/logo.png",
+		"getSelectGroup"=>	"/realtime/getSelectGroups.php"
 	);
 	$vars["sql"] = array(
 		"lastUpdate"		=>	"SELECT DateTime 
@@ -83,6 +88,8 @@
 								<script type="text/javascript" src="'.$vars["root"].$vars["files"]["jqDate"].'"></script>
 								<script type="text/javascript" src="'.$vars["root"].$vars["files"]["jqHigh"].'"></script>
 								<script type="text/javascript" src="'.$vars["root"].$vars["files"]["jqCursor"].'"></script>	
+								<script type="text/javascript" src="'.$vars["root"].$vars["files"]["jqTextRender"].'"></script>	
+								<script type="text/javascript" src="'.$vars["root"].$vars["files"]["jqAxisRender"].'"></script>	
 								<link rel="stylesheet" type="text/css" href="'.$vars["root"].$vars["files"]["jqPlotCSS"].'" />'
 	);
 ?>

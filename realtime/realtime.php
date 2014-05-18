@@ -33,19 +33,23 @@
 	}
 	$chartData = substr($chartData, 0, -1);
 	$chartData .= "]";
+	
+	$units = array();
+	foreach ($container as $point)
+		if (in_array($point[0]["units"], $units) == false)
+			$units[] = $point[0]["units"];
 ?>
 
-<div id="realtimeChart" style="height:500px; width:1000px;" >
+<div id="realtimeChart" style="height:500px; width:800px;" >
 </div>
-<input id="realtime-reset" type="button" value="Reset Zoom"></input>
 <script>
 	$(document).ready(function() {
 		var realtime = $.jqplot('realtimeChart', <?php echo $chartData; ?>, {
 			title: 'Realtime Graph',
 			series:[
 				<?php
-					$i = 1;
 					foreach ($container as $point) {
+						$i = array_search($point[0]["units"], $units) + 1;
 						if ($i != 1)
 							echo "{ label: '".$point[0]["name"]."', showMarker:false, yaxis: 'y".$i."axis' },\n";
 						else
@@ -62,12 +66,12 @@
 				},
 				<?php
 					$i = 1;
-					foreach ($container as $point) {
+					foreach ($units as $p) {
 						if ($i != 1)
 							echo "y".$i."axis:";
 						else
 							echo "yaxis:";
-						echo "{ autoscale:true, useSeriesColor: true, rendererOptions: { alignTicks: true } },";
+						echo "{ autoscale:true, useSeriesColor: true, rendererOptions: { alignTicks: true }, label: '".$p."',  labelRenderer: $.jqplot.CanvasAxisLabelRenderer },";
 						$i++;
 					}
 				?>
