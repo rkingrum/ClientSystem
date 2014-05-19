@@ -11,7 +11,7 @@
 		}
 	}
 
-	if (session_status() == PHP_SESSION_NONE)
+	if (!isset($_SESSION) || $_SESSION['is_open'] == FALSE)
 		if (isset($_COOKIE["PHPSESSID"]))
 			session_start($_COOKIE["PHPSESSID"]);
 	include $vars["files"]["dbConnect"];
@@ -32,10 +32,13 @@
 		$stmt = $mysqli->prepare($vars["sql"][$constraints[$i]->Sql]);
 		$stmt->bind_param("i", $constraints[$i]->Param);
 		$stmt->execute();
-		$result = $stmt->get_result();
+		$stmt->bind_result($id, $name);
+		$result = array();
+		while ($stmt->fetch())
+			$result[] = array($id, $name);
 		$stmt->close();
-		$realtimeString .= "<td><span>".$constraints[$i]->Label."</span><br /><select size='5' id='".$constraints[$i]->Id."'>";
-		while ($row = $result->fetch_array(MYSQLI_NUM)) {
+		$realtimeString .= "<span>".$constraints[$i]->Label."</span><select id='".$constraints[$i]->Id."'>";
+		foreach ($result as $row) {
 			if (isset($constraints[$i+1]))
 				$constraints[$i+1]->Param = $row[0];
 			$realtimeString .= "<option value='".$row[0]."' selected='selected'>".$row[1]."</option>";

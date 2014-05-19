@@ -6,21 +6,24 @@
 	include "../config/variables.php";
 	include "../".$vars["files"]["dbConnect"];
 	$container = array();
-	$dataSwitch = [ 0 => $vars["sql"]["getRealtimeData"], 1 => $vars["sql"]["getTempData"] ];
+	$dataSwitch = array( 0 => $vars["sql"]["getRealtimeData"], 1 => $vars["sql"]["getTempData"] );
 	foreach ($dataSwitch as $conn) {
 		$stmt = $mysqli->prepare($conn);
 		$stmt->bind_param("iss", $group, $start, $end);
 		$stmt->execute();
-		$result = $stmt->get_result();
+		$stmt->bind_result($id, $date, $value, $name, $desc, $units);
+		$result = array();
+		while ($stmt->fetch())
+			$result[] = array($id, $date, $value, $name, $desc, $units);
 		$stmt->close();
-		while ($row = $result->fetch_array(MYSQLI_NUM))
-			$container[$row[0]][] = [
+		foreach($result as $row)
+			$container[$row[0]][] = array(
 				"time"		=>	$row[1],
 				"value"		=>	$row[2],
 				"name"		=>	$row[3],
 				"desc"		=>	$row[4],
 				"units"		=>	$row[5]
-			];
+			);
 	}
 	$chartData = "[";
 	foreach ($container as $id => $point) {

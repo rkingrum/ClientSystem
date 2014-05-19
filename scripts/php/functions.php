@@ -86,7 +86,7 @@
 	}
 	
 	function login_check($mysqli) {
-		if (session_status() == PHP_SESSION_NONE)
+		if ($_SESSION['is_open'] == FALSE)
 			return false;
 		if(isset($_SESSION['user_id'], $_SESSION['username'], $_SESSION['login_string'])) {
 			$user_id = $_SESSION['user_id'];
